@@ -1,12 +1,28 @@
-# React + Vite
+Drag-and-Drop Workflow Builder
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Overview
+This project is a simple Workflow Builder Application built using React and react-flow. It allows users to create custom workflows by dragging, dropping, and connecting nodes on a  canvas. The application supports state management with Redux, saving and loading workflows, and editing node properties.
 
-Currently, two official plugins are available:
+Features
+✅ Drag-and-Drop Functionality – Users can drag nodes from a palette and place them on the canvas.
+✅ Node Types – Supports multiple node types (e.g., Start, Process, Decision).
+✅ Connections – Users can connect nodes with edges.
+✅ Edit Node Properties – Allows users to update labels, descriptions, and color.
+✅ Move & Rearrange – Nodes can be repositioned, with connections adjusting dynamically.
+✅ State Management – Uses Redux to manage workflow state.
+✅ Save & Load Workflow – Simulates backend integration by saving and loading workflows.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+Tech Stack : React, React-Flow, Redux , Tailwind CSS, react-hot-toast
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Setup & Installation
+
+1. Clone the Repository
+   git clone https://github.com/hareeshtj96/Work_Flow-Builder.git
+   cd workflow-builder
+
+2. Install Dependencies
+   npm install
+   
+3. Run the Application
+   npm run dev
