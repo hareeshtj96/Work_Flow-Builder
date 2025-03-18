@@ -1,14 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const PropertiesPanel = ({ isOpen, onClose, data, onUpdate }) => {
   const [title, setTitle] = useState(data.label || "");
   const [description, setDescription] = useState(data.description || "");
   const [color, setColor] = useState(data.color || "#ffffff");
 
+  const prevDataRef = useRef();
+
   useEffect(() => {
-    setTitle(data.label || "");
-    setDescription(data.description || "");
-    setColor(data.color || "#ffffff");
+    if (
+      !prevDataRef.current ||
+      prevDataRef.current.label !== data.label ||
+      prevDataRef.current.description !== data.description ||
+      prevDataRef.current.color !== data.color
+    ) {
+      setTitle(data.label || "");
+      setDescription(data.description || "");
+      setColor(data.color || "#ffffff");
+      prevDataRef.current = data;
+    }
   }, [data]);
 
   const handleSave = (e) => {

@@ -12,14 +12,9 @@ const CustomNode = ({ id, data }) => {
     dispatch(updateNodeText({ id, ...updatedData }));
   };
 
-  const getContentStyle = () => {
-    if (data.label === "Decision") {
-      return { transform: "rotate(-45deg)" };
-    }
-    return {};
-  };
+  const isDecision = data.shapeStyles.transform === "rotate(45deg)";
 
-  const isDecision = data.label === "Decision";
+  const contentStyle = isDecision ? { transform: "rotate(-45deg)" } : {};
 
   return (
     <div className="relative w-full max-w-[150px] min-w-0">
@@ -29,14 +24,14 @@ const CustomNode = ({ id, data }) => {
         style={{
           backgroundColor: data.color || "white",
           ...data.shapeStyles,
-          // Ensure aspect ratio is maintained for circles
+          // for circle
           aspectRatio: data.label === "Start" ? "1 / 1" : "auto",
         }}
         onClick={() => setIsModalOpen(true)}
       >
         <div
           className="text-center text-xs px-1 truncate w-full"
-          style={getContentStyle()}
+          style={contentStyle}
         >
           {data.label}
         </div>
