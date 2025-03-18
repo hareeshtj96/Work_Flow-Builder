@@ -24,20 +24,73 @@ const edgeTypes = {
 
 const FlowCanvas = () => {
   const dispatch = useDispatch();
-  const nodes = useSelector((state) => state.workflow.nodes);
-  const edges = useSelector((state) => state.workflow.edges);
+  const reduxNodes = useSelector((state) => state.workflow.nodes);
+  const reduxEdges = useSelector((state) => state.workflow.edges);
 
-  const [nodesState, setNodesState, onNodesChange] = useNodesState(nodes);
-  const [edgesState, setEdgesState, onEdgesChange] = useEdgesState(edges);
+  // Nodes with delete handlers
+  const prepareNodesWithHandlers = useCallback((nodes) => {
+    return nodes.map((node) => ({
+      ...node,
+      data: {
+        ...node.data,
+        onDelete: (nodeId) => handleDeleteNode(nodeId),
+      },
+    }));
+  }, []);
 
-  // Syncing with local state
+  // Initialize local state
+  const [nodesState, setNodesState, onNodesChange] = useNodesState([]);
+  const [edgesState, setEdgesState, onEdgesChange] = useEdgesState([]);
+
+  // Process node deletions
+  const handleDeleteNode = useCallback(
+    (nodeId) => {
+      setNodesState((prevNodes) =>
+        prevNodes.filter((node) => node.id !== nodeId)
+      );
+      setEdgesState((prevEdges) =>
+        prevEdges.filter(
+          (edge) => edge.source !== nodeId && edge.target !== nodeId
+        )
+      );
+
+      // Dispatch to Store
+      dispatch(deleteNode({ id: nodeId }));
+    },
+    [dispatch, setNodesState, setEdgesState]
+  );
+
+  // Sync from Redux to local state
   useEffect(() => {
-    setNodesState(nodes);
-  }, [nodes]);
+    const nodesWithHandlers = prepareNodesWithHandlers(reduxNodes);
+    setNodesState(nodesWithHandlers);
+  }, [reduxNodes, prepareNodesWithHandlers]);
 
   useEffect(() => {
-    setEdgesState(edges);
-  }, [edges]);
+    setEdgesState(reduxEdges);
+  }, [reduxEdges]);
+
+  // Node changes handler
+  const handleNodesChange = useCallback(
+    (changes) => {
+      onNodesChange(changes);
+
+      setNodesState((currentNodes) => {
+        const cleanNodes = currentNodes.map((node) => ({
+          ...node,
+          data: {
+            ...node.data,
+            onDelete: undefined,
+          },
+        }));
+
+        // Dispatch to store
+        dispatch(setNodes(cleanNodes));
+        return currentNodes;
+      });
+    },
+    [onNodesChange, dispatch]
+  );
 
   const onConnect = useCallback(
     (connection) => {
@@ -66,24 +119,14 @@ const FlowCanvas = () => {
         edgesState
       );
       setEdgesState(newEdge);
+
+      // Save edges to Redux
       dispatch(setEdges(newEdge));
     },
     [edgesState, setEdgesState, dispatch, nodesState]
   );
 
-  const handleDeleteNode = (nodeId) => {
-    setNodesState((prevNodes) =>
-      prevNodes.filter((node) => node.id !== nodeId)
-    );
-    setEdgesState((prevEdges) =>
-      prevEdges.filter(
-        (edge) => edge.source !== nodeId && edge.target !== nodeId
-      )
-    );
-    dispatch(deleteNode({ id: nodeId }));
-  };
-
-  //  Drop feature
+  // Drop feature
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
@@ -125,46 +168,58 @@ const FlowCanvas = () => {
         };
       }
 
+      // Create the node
       const newNode = {
         id: uuidv4(),
         type: "custom",
         position,
         data: {
-          label: `${nodeType}`,
+          label: nodeType,
           onDelete: handleDeleteNode,
           shapeStyles,
         },
       };
 
-      setNodesState((prevNodes) => {
-        const updatedNodes = [...prevNodes, newNode];
-        dispatch(setNodes(updatedNodes));
-        return updatedNodes;
-      });
+      // Add to local state
+      setNodesState((prevNodes) => [...prevNodes, newNode]);
+
+      // Create a copy
+      const cleanNode = {
+        ...newNode,
+        data: {
+          ...newNode.data,
+          onDelete: undefined,
+        },
+      };
+
+      // Update Redux
+      dispatch(setNodes([...reduxNodes, cleanNode]));
     },
-    [setNodesState, dispatch, handleDeleteNode]
+    [setNodesState, dispatch, handleDeleteNode, reduxNodes]
   );
 
   return (
     <div
-      className="h-screen w-full bg-gray-100"
+      className="h-screen min-h-screen w-full bg-gray-100 flex flex-col"
       onDrop={onDrop}
       onDragOver={(e) => e.preventDefault()}
     >
-      <ReactFlow
-        nodes={nodesState}
-        edges={edgesState}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        fitView
-      >
-        <MiniMap />
-        <Controls />
-        <Background />
-      </ReactFlow>
+      <div className="flex-1 w-full">
+        <ReactFlow
+          nodes={nodesState}
+          edges={edgesState}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          onNodesChange={handleNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          fitView
+        >
+          <MiniMap />
+          <Controls />
+          <Background />
+        </ReactFlow>
+      </div>
     </div>
   );
 };

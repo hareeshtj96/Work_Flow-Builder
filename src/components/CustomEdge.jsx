@@ -1,24 +1,7 @@
 import React from "react";
-import { getBezierPath } from "reactflow";
 
-const CustomEdge = ({
-  id,
-  sourceX,
-  sourceY,
-  targetX,
-  targetY,
-  sourcePosition,
-  targetPosition,
-  style = {},
-}) => {
-  const edgePath = getBezierPath({
-    sourceX,
-    sourceY,
-    sourcePosition,
-    targetX,
-    targetY,
-    targetPosition,
-  });
+const CustomEdge = ({ id, sourceX, sourceY, targetX, targetY, style = {} }) => {
+  const edgePath = `M ${sourceX},${sourceY} L ${targetX},${targetY}`;
 
   // Calculate midpoint of the line
   const midX = (sourceX + targetX) / 2;

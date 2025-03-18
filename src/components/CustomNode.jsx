@@ -22,10 +22,10 @@ const CustomNode = ({ id, data }) => {
   const isDecision = data.label === "Decision";
 
   return (
-    <div className="relative">
+    <div className="relative w-full max-w-[150px] min-w-0">
       {/* Main node shape container */}
       <div
-        className="border shadow cursor-pointer flex items-center justify-center"
+        className="border shadow cursor-pointer flex items-center justify-center p-2"
         style={{
           backgroundColor: data.color || "white",
           ...data.shapeStyles,
@@ -42,7 +42,7 @@ const CustomNode = ({ id, data }) => {
         </div>
       </div>
 
-      {/* Delete button - Positioned relative to outer container */}
+      {/* Delete button  */}
       <button
         className="absolute -top-1 -right-1 bg-red-500 text-white text-xs p-0 w-4 h-4 flex items-center justify-center rounded-full z-20"
         onClick={(e) => {
@@ -64,7 +64,6 @@ const CustomNode = ({ id, data }) => {
           <Handle type="source" position={Position.Left} />
           <Handle type="target" position={Position.Right} />
           <Handle type="source" position={Position.Right} />
-          {/* The default handles are already at Top and Bottom */}
         </>
       )}
 
