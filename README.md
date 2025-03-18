@@ -1,9 +1,9 @@
-#Drag-and-Drop Workflow Builder
+**Drag-and-Drop Workflow Builder**
 
-Overview
+**Overview**
 This project is a simple Workflow Builder Application built using React and react-flow. It allows users to create custom workflows by dragging, dropping, and connecting nodes on a  canvas. The application supports state management with Redux, saving and loading workflows, and editing node properties.
 
-Features
+**Features**
 ✅ Drag-and-Drop Functionality – Users can drag nodes from a palette and place them on the canvas.
 ✅ Node Types – Supports multiple node types (e.g., Start, Process, Decision).
 ✅ Connections – Users can connect nodes with edges.
@@ -13,16 +13,17 @@ Features
 ✅ Save & Load Workflow – Simulates backend integration by saving and loading workflows.
 
 
-Tech Stack : React, React-Flow, Redux , Tailwind CSS, react-hot-toast
+**Tech Stack :** 
+   React, React-Flow, Redux , Tailwind CSS, react-hot-toast
 
-Setup & Installation
+**Setup & Installation**
 
-1. Clone the Repository
+1. **Clone the Repository**
    git clone https://github.com/hareeshtj96/Work_Flow-Builder.git
    cd workflow-builder
 
-2. Install Dependencies
+2. **Install Dependencies**
    npm install
-   
-3. Run the Application
+
+3. **Run the Application**
    npm run dev
